@@ -1,0 +1,37 @@
+
+# An example of the pivotstep notation for social dances.
+# Jim Mahoney (mahoney@marlboro.edu),  Jan 2010
+
+about:
+  dance: argentine tango            # file(s) argentine_tango.*
+  dancers: man, woman               # nouns (objects) from dance file
+  tempo: 70 beats per minute, 1 beat per line
+  music: "./el_flete.wav"
+  beats: 0.686 sec, ...             # or file listing all beat times
+
+man & woman embrace open;           # semicolon means simultaneous with next
+man stands on right foot;           # basic form is "noun verb args"
+woman stands on left foot;          # object form: woman.stands(on,left,foot)
+
+man              & woman:           # parallel structures for two dancers
+  forward        |   back
+  forward        |   back 
+  forward        |   back
+  forward        |   back
+  side, shift    |   side, shift    # two moves in one beat
+  back           |   back
+  side, shift    |   side, shift
+  forward        |   back           # one move in two lines,
+  ...            |   ...            # i.e. in two beats
+  pause          |   pause
+  shift, shift   |   shift, shift
+  side           |   side
+  shift          |   shift
+  side           |   side
+  side           |   side
+  forward, shift |   back, shift
+  back           |   forward
+  ...            |   ...
+
+man & woman pause     (16 beats)    # explicit time duration 
+

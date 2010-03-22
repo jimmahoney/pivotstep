@@ -1,0 +1,63 @@
+
+== March 22 2010 ===
+
+Reorganized the directories
+and created a google code project for this work.
+I'm going to try Mercurial, which'll be a new thing for me.
+(See http://www.joelonsoftware.com/items/2010/03/17.html.)
+
+
+=== Jan 18 2010 ================================
+
+There are more materials for this project in
+~/academics/dance_tech/summer2009/blender/dancers/ .
+But with a new term starting, I'm collecting the 
+few active files in one place.
+
+* Part 0 was an exploration of SecondLife, including 
+a few import and coding projects, including a model
+of myself, a 3D string figure, and the start of a 
+juggling animation.  I was able to import
+a character animation using jacek's blender files,
+which also served as a starting point for rest
+of my blender work.
+
+* Part 1 is the dancers.blender and dancers.py files.
+(The .py is also within the .blend; I edit the external .py 
+and sync it from within blender.)  It contains man/woman
+dancer models, and a walk_sequence() method that generates 
+animations given named move sequences.  The dance actions 
+are primitive so far, but enough to get started.  There's
+a series of tests within dancer.py, but no nice user interface - 
+I just run it from the console within blender.
+
+* Part 2 is a very preliminary version of the pivot parser grammer,
+implemented using pyparsing, which is in the "pivot" files.
+It passes it's tests, and turns el_flete.pivot into el_flete.steps.
+I flailed around for a while, but think that the grammar I have
+now is a good beginning.
+
+TODO : 
+
+ -- finish el_flete example --
+ * fix clock in pivot for ... ; 
+   must increment modified and future steps
+ * fix duration of first few semicolon lines 
+   in el_flete (is 1.0; should be 0.0)
+ * add Tango class to dancers.py that can read and 
+   assign moves from .step file
+ * add music to the blender animation in dancers*.blend
+ * get the .bvh export working on man/woman animations
+ * export to 2nd life, including aligning actors
+
+ -- bvh / blender / pivotstep connections --
+ * connect bvh syntax with pivot
+ * decide on a macro/function syntax
+ * describe current models & steps within pivot
+ * read blender from bvh and pivot
+
+ -- blender actions with arguments --
+ * create new blender actions (character movements)
+   on the fly given parameters such as the size 
+   and direction of the step.
+

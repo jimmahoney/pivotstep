@@ -1,0 +1,47 @@
+         who |         what |                  how |       when |   duration
+----------------------------------------------------------------------------
+ _man_woman_ |      embrace |                 open |     0.6860 |    0.85714
+         man |       stands |        on right foot |     1.5431 |    0.85714
+       woman |       stands |         on left foot |     2.4003 |    0.85714
+         man |      forward |                      |     3.2574 |    0.85714
+       woman |         back |                      |     3.2574 |    0.85714
+         man |      forward |                      |     4.1146 |    0.85714
+       woman |         back |                      |     4.1146 |    0.85714
+         man |      forward |                      |     4.9717 |    0.85714
+       woman |         back |                      |     4.9717 |    0.85714
+         man |      forward |                      |     5.8289 |    0.85714
+       woman |         back |                      |     5.8289 |    0.85714
+         man |         side |                      |     6.6860 |    0.42857
+         man |        shift |                      |     7.1146 |    0.42857
+       woman |         side |                      |     6.6860 |    0.42857
+       woman |        shift |                      |     7.1146 |    0.42857
+         man |         back |                      |     7.5431 |    0.85714
+       woman |         back |                      |     7.5431 |    0.85714
+         man |         side |                      |     8.4003 |    0.42857
+         man |        shift |                      |     8.8289 |    0.42857
+       woman |         side |                      |     8.4003 |    0.42857
+       woman |        shift |                      |     8.8289 |    0.42857
+         man |      forward |                      |     9.2574 |    1.71429
+       woman |         back |                      |     9.2574 |    1.71429
+         man |        pause |                      |     9.2574 |    0.85714
+       woman |        pause |                      |     9.2574 |    0.85714
+         man |        shift |                      |    10.1146 |    0.42857
+         man |        shift |                      |    10.5431 |    0.42857
+       woman |        shift |                      |    10.1146 |    0.42857
+       woman |        shift |                      |    10.5431 |    0.42857
+         man |         side |                      |    10.9717 |    0.85714
+       woman |         side |                      |    10.9717 |    0.85714
+         man |        shift |                      |    11.8289 |    0.85714
+       woman |        shift |                      |    11.8289 |    0.85714
+         man |         side |                      |    12.6860 |    0.85714
+       woman |         side |                      |    12.6860 |    0.85714
+         man |         side |                      |    13.5431 |    0.85714
+       woman |         side |                      |    13.5431 |    0.85714
+         man |      forward |                      |    14.4003 |    0.42857
+         man |        shift |                      |    14.8289 |    0.42857
+       woman |         back |                      |    14.4003 |    0.42857
+       woman |        shift |                      |    14.8289 |    0.42857
+         man |         back |                      |    15.2574 |    1.71429
+       woman |      forward |                      |    15.2574 |    1.71429
+ _man_woman_ |        pause |                      |    15.2574 |   13.71429
+
