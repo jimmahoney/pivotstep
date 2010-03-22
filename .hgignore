@@ -1,0 +1,7 @@
+# python temporary files
+syntax: glob
+*.pyc
+
+# link to old project files
+syntax: regexp
+_old_work
