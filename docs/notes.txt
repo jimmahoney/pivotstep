@@ -1,4 +1,9 @@
 
+== March 23 2010 ===
+
+I think pivot now converts el_flet.pivot to el_flet.steps reasonably.
+Next on to blender.
+
 == March 22 2010 ===
 
 Reorganized the directories
@@ -6,6 +11,26 @@ and created a google code project for this work.
 I'm going to try Mercurial, which'll be a new thing for me.
 (See http://www.joelonsoftware.com/items/2010/03/17.html.)
 
+The remote repository is http://code.google.com/p/pivotstep/
+I've setup ~/.hgrc to authenticate with my google credentials.
+
+Workflow is 
+ $ hg add filename
+ $ hg mv oldfile newfile
+ $ hg commit -m "..."    # all changes, in all folders, to local repo
+ $ hg push               # send local repo changes to remote repo
+
+Looking at .pivot => .step 
+ $ src/pivot < dances/tango/el_flete/el_flete.pivot > dances/tango/el_flete/el_flete2.steps
+An older version gave "when | duration" in seconds;
+the current one gives "clock | beats" in beats.  Hmm.
+
+I think that the simultaneous moves should have duration of 0.0,
+which would let me distinguish them from sequential ones in blender.
+
+OK, I've started to make such a change.
+Need to keep things simple to get something out within a day or two;
+I keep getting side tracked.
 
 === Jan 18 2010 ================================
 
@@ -39,11 +64,13 @@ now is a good beginning.
 
 TODO : 
 
- -- finish el_flete example --
- * fix clock in pivot for ... ; 
+ -- finish pivot el_flete example --                         DONE 3/24
+ * fix clock in pivot for ... ;
    must increment modified and future steps
- * fix duration of first few semicolon lines 
+ * fix duration of first few semicolon lines
    in el_flete (is 1.0; should be 0.0)
+
+ -- connect it to blender --
  * add Tango class to dancers.py that can read and 
    assign moves from .step file
  * add music to the blender animation in dancers*.blend

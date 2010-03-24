@@ -5,3 +5,5 @@ syntax: glob
 # link to old project files
 syntax: regexp
 _old_work
+.DS_Store
+

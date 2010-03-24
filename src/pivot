@@ -8,41 +8,53 @@
    * have a minimum of special symbols, for the same reason,
    * use indentation blocks and comments similar to python's conventions.
 
- This file implements its grammar using the pyparsing module.
- (For pyparsing inforamtion, see http://pyparsing.wikispaces.com/ .)
+ This file implements its grammar using the pyparsing package;
+ see http://pyparsing.wikispaces.com/ for more information on it.
 
- Here's a short example of a pivot dance description :
-
-    in 16 beats:
-      heads chain across; sides wave     # ';' means simultaneous moves
-      sides chain across; heads wave     # two lines so 8 beats per line
-    in 8 beats per line:
-      heads: 
-        forward, back                    # 4 beats for two sequential moves
-        right_n_left                     # 8 beats for one move
+ The two initial dance styles in development are 
+ Argentine tango and contra dancing.
 
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
- The syntax to describe a motion is basically
+ Each dance is broken down into a sequence of 'steps' 
+ (essentially animation poses or actions) done by the dancers.
 
-   when who what how
+ The basic syntax to specify a step is
+
+   who what how (duration)
+
+ for example 
+
+   men allemande right 3/2  (8 beats)
 
  which are
-   when   the time and/or duration of the move (i.e. 'in 16 beats')
-   who    a dancer 'object' (i.e. heads)
-   what   the dancer object's methods (i.e. 'chain', 'forward')
-   how    the optional parameters passed to the object method (i.e. 'across')
 
- In python object syntax, the "who what how" part would be "who.what(how)".
+   who        a dancer(s) 'object'           (e.g. 'men')
+   what       a corresponding method         (e.g. 'allemande')
+   how        optional parameters            (e.g. 'right 3/2')
+   duration   optional elapsed time          (e.g. '8 beats')
 
- ... more description coming ... eventually
+ In object oriented programming syntax this might be written as
+
+   who.what(how, duration) 
 
  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
- Usage:
 
-   $ pivot < el_flete.pivot > el_flete.steps
+ As of March 2010, this is still very much a work in progress.
+
+ TODO: implement "dancer: " blocks.  
+       parallel ones are working; plain aren't yet.
+       I'll need to either deprecate or think about the "one line versions", 
+       e.g. "a: b: c" is currently test 2.
  
- Jim Mahoney, Jan 2010
+ This looks OK on 3/24 :
+   $ src/pivot < dances/tango/el_flete/el_flete.pivot \
+               > dances/tango/el_flete/el_flete3.steps
+
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
+ 
+ license: GPL
+ project site: http://code.google.com/pivotstep/
 
 """
 
@@ -55,38 +67,37 @@ from pyparsing import (
 
 # == setup ==
 
-# only when script is run from command line
 runTests = False
 showTestsParse = False
 showTestsCompilation = False
 debugParse = False
 debugCompile = False
 
-# == grammar ==    (See notes_pyparsing.txt.)
+# == grammar ==
 
 ParserElement.setDefaultWhitespaceChars(' \t') # Don't ignore newlines.
 indentStack = [1]                              # for pyparsing's indentedBlock
 
 plusOrMinus = Literal('+') | Literal('-')
 decimalPoint = Literal('.')
-comma = Literal(',')                   # time sequential delimiter
-semi = Literal(';')                    # time simultaneous delimiter
-colon = Literal(':')                   # python-ish blocks
-numberSign = Literal('#')              # python-ish comments
+comma = Literal(',')                           # time sequential delimiter
+semi = Literal(';')                            # time simultaneous delimiter
+colon = Literal(':')                           # python-ish blocks
+numberSign = Literal('#')                      # python-ish comments
 
-in_ = Literal('in')                    # e.g. "in 3 beats:"
-at_ = Literal('at')                    # e.g. "at 6 sec:"
+in_ = Literal('in')                            # e.g. "in 3 beats:"
+at_ = Literal('at')                            # e.g. "at 6 sec:"
 about = Literal('about')
-per = Literal('per')                   # e.g. "72 beats per minute"
+per = Literal('per')                           # e.g. "72 beats per minute"
 ellipsis = Literal('...')
-equal = Literal('=')                   # e.g. "a = 3.2 sec"
-function = Literal('function')         # e.g. "f = function ...
+equal = Literal('=')                           # e.g. "a = 3.2 sec"
+function = Literal('function')                 # e.g. "f = function ...
 dancer = (Literal('dancers') | Literal('dancer'))('dancer')
 openParen = Suppress(Literal('('))
 closeParen = Suppress(Literal(')'))
 divide = Literal('/')
-and_ = Literal('&')                    # e.g. man        &    woman:
-while_ = Literal('|')                  # e.g.   forward  |      back
+and_ = Literal('&')                            # e.g.   man       &  woman:
+while_ = Literal('!')                          # e.g.     forward !  back
 
 optionalComma = Suppress(Optional(comma))
 quietSemi = Suppress(semi)
@@ -120,9 +131,9 @@ expression = Group(aboutPhrase | atPhrase | inPhrase | atoms)('expression')
 expressionsC = myList(expression, comma, ',')('expressions comma')
 expressionsS = myList(expression, semi, ';')('expressions semi')
 
-parallel = myList(expression, while_, '|')('parallel')
-parallelC = myList(expressionsC, while_, '|')('parallel comma')
-parallelS = myList(expressionsS, while_, '|')('parallel semi')
+parallel = myList(expression, while_, '!')('parallel')
+parallelC = myList(expressionsC, while_, '!')('parallel comma')
+parallelS = myList(expressionsS, while_, '!')('parallel semi')
 
 duration = Group(openParen + numeric + closeParen)('duration');
 
@@ -223,7 +234,8 @@ def parse2treeString(element, indentWidth=2):
 
 def printDebugCompile(string):
   """ print if debugCompile is True """
-  if debugCompile: print string
+  if debugCompile: 
+    print string
   
 
 # == compiling ==
@@ -231,28 +243,30 @@ def printDebugCompile(string):
 # In the following compilation handlers:
 #    s = current dance object (e.g. self)
 #    x = tuple of pyparsing result elements, e.g. (blockHead, blockBody)
-noHandler       = lambda s, x: None
-loopHandler     = lambda s, x: [s.interpret(i) for i in x[0]]
-blockHandler    = lambda s, x: s.interpretBlock(x[0])
-lineHandler     = lambda s, x: s.interpretLine(x[0])
-parallelHandler = lambda s, x: s.interpretParallel(x[0])
-aboutHandler    = lambda s, x: s.aboutBlock(x[0], x[1])
-aboutAssign     = lambda s, x: s.aboutAssign(x[0], x[1])
-atHandler       = lambda s, x: s.atBlock(x[0], x[1])
-inHandler       = lambda s, x: s.inBlock(x[0], x[1])
-dancersHandler  = lambda s, x: s.setDancers(x[1])
-whoHandler      = lambda s, x: s.interpretWho(x[1])
-tempoHandler    = lambda s, x: s.timing.setTempos(x[1])
-beatHandler     = lambda s, x: s.timing.setBeats(x[1])
-atomsParaHandler= lambda s, x: s.interpretAtomsPara(x)
-expListHandler    = lambda s, x, beats: s.interpretExpList(x, beats)
-expressionHandler = lambda s, x, beats: s.interpretExpression(x, beats)
+noHandler         = lambda s, x: None
+loopHandler       = lambda s, x: [s.interpret(i) for i in x[0]]
+blockHandler      = lambda s, x: s.interpretBlock(x[0])
+lineHandler       = lambda s, x: s.interpretLine(x[0])
+lineSimulHandler  = lambda s, x: s.interpretSimulLine(x[0])
+parallelHandler   = lambda s, x: s.interpretParallel(x[0])
+aboutHandler      = lambda s, x: s.aboutBlock(x[0], x[1])
+aboutAssign       = lambda s, x: s.aboutAssign(x[0], x[1])
+atHandler         = lambda s, x: s.atBlock(x[0], x[1])
+inHandler         = lambda s, x: s.inBlock(x[0], x[1])
+dancersHandler    = lambda s, x: s.setDancers(x[1])
+whoHandler        = lambda s, x: s.interpretWho(x[1])
+tempoHandler      = lambda s, x: s.timing.setTempos(x[1])
+beatHandler       = lambda s, x: s.timing.setBeats(x[1])
+atomsParaHandler  = lambda s, x: s.interpretAtomsPara(x)
+expListHandler    = lambda s, x, beats, simul: s.interpretExpList(x, beats, simul)
+expSimulHandler   = lambda s, x, beats, simul: s.interpretSimulList(x, beats, simul)
+expressionHandler = lambda s, x, beats, simul: s.interpretExpression(x, beats, simul)
 
 reservedWords = {
   'pivot'             : loopHandler,
   'block'             : blockHandler,
   'line'              : lineHandler,
-  'line simul'        : lineHandler,
+  'line simul'        : lineSimulHandler,
   'parallel line'     : parallelHandler,
   'parallel comma'    : parallelHandler,
   'about'             : aboutHandler,
@@ -264,7 +278,7 @@ reservedWords = {
   'beat'              : beatHandler,
   'beats'             : beatHandler,
   'expressions comma' : expListHandler,
-  'expressions semi'  : expListHandler,
+  'expressions semi'  : expSimulHandler,
   'expression'        : expressionHandler,
   'atoms parallel'    : atomsParaHandler,
   }
@@ -273,6 +287,7 @@ reservedWords = {
 class Timing:
   """ Manage dance time in lines, beats, and seconds. """
   def __init__(self):
+    printDebugCompile('Timer initialized')
     self.beats = []      # list of times (sec) for each beat of song
     self.beatsPer = {'line':1.0, 'minute':60.0, 'second':1.0}   # defaults
     self.secondsPerBeat = 1.0  # default
@@ -290,9 +305,12 @@ class Timing:
           if expression[1] in ['beat', 'beats']:
             value = float(expression[0])   # e.g. 60
             key = expression[3]            # e.g. 'minute'
-            if key in ['sec', 'secs', 'seconds']: key='second'
-            if key in ['min', 'mins', 'minutes']: key='minute'
-            if key in ['lines']: key='line'
+            if key in ['sec', 'secs', 'seconds']: 
+              key='second'
+            if key in ['min', 'mins', 'minutes']: 
+              key='minute'
+            if key in ['lines']: 
+              key='line'
             self.beatsPer[key] = value
             if key=='second': 
               self.beatsPer['minute'] = value * 60.0
@@ -308,7 +326,8 @@ class Timing:
       raise Exception('error while trying to interpret tempo')
   def clock(self, beat=None):
     """ get/set current time (in beats) """
-    if beat: self.beat = beat
+    if beat: 
+      self.beat = beat
     return self.beat
   def advanceClock(self, beats):
     self.beat += beats
@@ -340,7 +359,6 @@ class Timing:
           self.beats.append(value)
     except:
       pass
-      # raise Exception('setBeats is not able to do that yet')
       # FIXME : if filename, read and put into beats
   def __str__(self):
     return "beatsPer%s, beats=%s " % (str(self.beatsPer), str(self.beats))
@@ -366,7 +384,8 @@ class Dance:
 
   def compile(self):
     """ parse input and interpret parse tree """
-    if not input: return 'Nothing to do'    
+    if not input: 
+      return 'Nothing to do'    
     try:   
       parsed = parse(self.input)
     except:
@@ -382,9 +401,11 @@ class Dance:
       raise Exception('Oops - not a well formed pivot dance.')
     self.interpret(self.dance)
 
-  def doStep(self, who, what_how, beats=None, clock=None):
-    if not clock: clock = self.timing.clock()
-    if not beats: beats = self.timing.beatsPerLine()
+  def doStep(self, who, what_how, beats=None, simul=False, clock=None):
+    if clock==None:
+      clock = self.timing.clock()
+    if beats==None: 
+      beats = self.timing.beatsPerLine()
     what = str(what_how[0])
     how = '' if len(what_how) < 2 else ' '.join(map(str,what_how[1:]))
     printDebugCompile("**STEP** who='%s', what='%s', how='%s', clock=%2.1f, beats=%2.1f\n" \
@@ -392,10 +413,12 @@ class Dance:
     if what == '...':
       index = len(self.steps) - 1
       while self.steps[index]['who'] != who and index >= 0: index -= 1
-      if index < 0: raise Exception("in doStep: '%s ...' error. " % who)
+      if index < 0: 
+        raise Exception("in doStep: '%s ...' error. " % who)
       self.steps[index]['beats'] += beats
     else:
       self.steps.append({'who':who, 'what':what, 'clock':clock, 'beats':beats, 'how':how})
+    if not simul:
       self.timing.advanceClock(beats)
 
   def whoParallel(self, expression):
@@ -404,16 +427,16 @@ class Dance:
   def getDuration(self, line):
     """ Return float beats from () at end of line. """
     try:
-      lineName = line.getName()
-      if lineName in ('line simul', 'parallel simul'):
-        return 0.0
       if line[-1].getName()=='duration':
-        try:      #  e.g. "(3 beats)"
+        try:                                 #  e.g. "(3 beats)"
           beats = float(line[-1][0])     
-        except:   # e.g. "(1/3 beat)"
+        except:                              # e.g. "(1/3 beat)"
           beats = float(line[-1][0][0]) / float(line[-1][0][2])
       else:
-        beats = self.timing.beatsPerLine()
+        if line.getName() in ('line simul', 'parallel simul'):
+          beats = 0.0
+        else:
+          beats = self.timing.beatsPerLine()
     except:
       beats = None;
       raise Exception("in getDuration: couldn't understand '%s'" % str(line))
@@ -425,13 +448,23 @@ class Dance:
       name = element.getName()
     except:
       raise Exception("no name for element '" + element + "'")
-    printDebugCompile( "interpret '%s'" % name )
+    printDebugCompile("interpret '%s'" % name )
     handler = reservedWords.get(name, noHandler)
     handler(self, (element,))
 
   def interpretWho(self, element):
-    printDebugCompile('interpretWho %s' % str(element))
+    pass
     # TODO: implement "dancer: ..." blocks
+    # 1. extract head, body
+    # 2. push who from head onto stack
+    # 3. call interpretBlockBody
+    # 4. pop who from stack
+    ## printDebugCompile("interpretWho '%s'" % str(element))
+    ## who = str(element[0][0])
+    ## printDebugCompile(" who = '%s'" % who)
+    ## self.whoStack.append(who)
+    ## self.interpretBlockBody(element[1])
+    ## self.whoStack.pop()
 
   def interpretAtomsPara(self, element):
     printDebugCompile('interpretAtomsPara')
@@ -459,18 +492,24 @@ class Dance:
       handler = reservedWords[headName]
     except:
       headName = str(head[0])
-      handler = noHandler
+      # TODO: this migh be whoHandler; if so, do the right thing.
+      handler = noHandler        
     printDebugCompile(' head name = %s' % headName)
     # printDebugCompile(parse2treeString(head))
     handler(self, (head, body))
 
-  def interpretExpList(self, list, beats):
+  def interpretSimulList(self, list, beats, simul):
+    printDebugCompile("interpretSimulList beats=%s" % str(beats))
+    for expression in list:
+      self.interpretExpression(expression, beats, simul)
+
+  def interpretExpList(self, list, beats, simul):
     nMoves = len(list)
     beatDivided = float(beats)/nMoves
     for expression in list:
-      self.interpretExpression(expression, beatDivided)
+      self.interpretExpression(expression, beatDivided, simul)
 
-  def interpretExpression(self, expression, beats):
+  def interpretExpression(self, expression, beats, simul):
     # This is the heart of it all : do a dance step, 
     # i.e. "john walks to outside right quick"
     # First element in expression is either:
@@ -478,6 +517,7 @@ class Dance:
     #    in which case 'john' and 'mary' should be dancers,
     #  * a dancer, or
     #  * a method of dancer=self.whoStack[-1]
+    printDebugCompile("interpretExpression beats=%s" % str(beats))
     try:
       if expression[0].getName()=='atoms parallel':
         who = self.whoParallel(expression[0])
@@ -495,9 +535,22 @@ class Dance:
           who = self.whoStack[-1]
           what_how = expression.asList()
         except:
-          who = str(expression[0])                    # FIXME: exception?  
+          who = str(expression[0])                   # FIXME: exception?  
           what_how = expression[1:]
-    self.doStep(who, what_how, beats)
+    self.doStep(who, what_how, beats, simul)
+
+  def interpretSimulLine(self, element):
+    printDebugCompile( "interpretSimulLine '%s'" % str(element.asList()) )
+    beats = self.getDuration(element)
+    try:
+      ## first element in line | line simul can be (exp_comma, exp_semi, expression)
+      handler = reservedWords.get(element[0].getName(), noHandler)
+      printDebugCompile(" calling handler '%s'" % element[0].getName())
+      handler(self, element[0], beats, True)
+    except:
+      pass  # FIXME: what is the right thing to do here?
+      # noHandler(self, element[0], beats)    
+      # raise Exception("unexpected token in interpretLine")
 
   def interpretLine(self, element):
     printDebugCompile( "interpretLine '%s'" % str(element.asList()) )
@@ -506,9 +559,9 @@ class Dance:
     try:
       ## first element in line | line simul can be (exp_comma, exp_semi, expression)
       handler = reservedWords.get(element[0].getName(), noHandler)
-      handler(self, element[0], beats)
+      handler(self, element[0], beats, False)
     except:
-      pass  # FIXME: right thing here??
+      pass  # FIXME: what is the right thing to do here?
       # noHandler(self, element[0], beats)    
       # raise Exception("unexpected token in interpretLine")
 
@@ -516,6 +569,7 @@ class Dance:
     printDebugCompile( "interpretParallel '%s'" % str(element.asList()) )
     printDebugCompile(parse2treeString(element))
     parallelLines = element[0]
+    simul = True if parallelLines.getName()=='parallel semi' else False
     # paralellLines is 'parallel' or 'parallel comma' or 'parallel semi'
     # Treatment is similar to interpretLine :
     #   0. get line duration from end () or self.timing
@@ -536,7 +590,7 @@ class Dance:
         printDebugCompile("  who,exp = '%s','%s'" % (who, str(expression)))
         self.whoStack.append(who)                # push this name
         handler = reservedWords[expression.getName()]
-        handler(self, expression, beats)
+        handler(self, expression, beats, simul)
         self.whoStack.pop()                      # pop this name
         self.timing.rewindClock(beats)
     else:
@@ -587,19 +641,21 @@ class Dance:
   def asTree(self):
     return parse2treeString(self.dance)
 
-  def asFullFormText(self, inBeats=True):
+  def asFullFormText(self, units='beats'):
     """ Return dance as string, one step per line, with bars between entries :
-        # who | what | how | when | duration
+        #  who | what | how | when | duration
         # -----------------------------------
     """
+    inBeats = units=='beats'
     timeWho = lambda x,y: cmp((x['clock'],x['who']),(y['clock'],y['who']))
     self.steps.sort(timeWho)
-    form = "%12s | %12s | %20s | %10.4f | %10.5f\n"
-    formS = "%12s | %12s | %20s | %10s | %10s\n"
+    form =  "# %12s | %12s | %20s | %10.4f | %10.5f\n"
+    formS = "# %12s | %12s | %20s | %10s | %10s\n"
     if inBeats:
-      string = formS % ('who', 'what', 'how', 'clock', 'beats') + '-'*76 + "\n"
+      string = formS % ('who', 'what', 'how', 'clock', 'beats')
     else:
-      string = formS % ('who', 'what', 'how', 'when', 'duration') + '-'*76 + "\n"
+      string = formS % ('who', 'what', 'how', 'when', 'duration')
+    string += '# ' + '-'*76 + "\n"
     for step in self.steps:
       if inBeats:
         string += form % (step['who'], step['what'], step['how'], \
@@ -620,7 +676,7 @@ class Dance:
       string += "    at %.2f: %s . %s '%s' (%.2f) \n" % \
           tuple(step[i] for i in ('clock', 'who', 'what', 'how', 'beats'))
     return string
-        
+
 
 # == debugging ===
 
@@ -726,7 +782,8 @@ class Tests:
       parsed = Dance(code)
       parseTree = '\n' + parsed.asTree()
       self.ok(parseTree == expectedParse, message)
-      if showTestsCompilation: print code + "\n" + str(parsed)
+      if showTestsCompilation: 
+        print code + "\n" + str(parsed)
     # line blocks vs blocks
     lineblockTree = Dance(codeTests[1][0]).asTree()
     blockTree = Dance(codeTests[2][0]).asTree()
@@ -1023,8 +1080,8 @@ man forward quick; woman back quick  (1/3 beat)
   ("""
 # 9: parallel block
 john         & mary         & alice:
- walk        |  run         |  hop
- side, side  |  side, back  |  over, out
+ walk        !  run         !  hop
+ side, side  !  side, back  !  over, out
 """ , """
   pivot
     empty line
@@ -1080,7 +1137,7 @@ mary & john walk
 # 11: parallel block variations
 will & sally:
   embrace;
-  forward, shift | back, shift (3)
+  forward, shift ! back, shift (3)
 """ , """
   pivot
     empty line
@@ -1110,6 +1167,123 @@ will & sally:
 """), 
   # -------------------------
   ("""
+# 12: simultaneous vs sequential timing
+about:
+  dancers: man, woman
+man stands on right; man waves;
+man forward onto left
+woman raises arm; woman smiles;   (6 beats)
+woman forward, woman side         (8 beats)
+man & woman dip                   (10 beats)
+""" , """
+  pivot
+    empty line
+    block
+      block head
+        about
+          'about'
+      block body
+        block
+          block head
+            'dancers'
+          block body
+            line
+              expressions comma
+                expression
+                  'man'
+                expression
+                  'woman'
+    line simul
+      expressions semi
+        expression
+          'man'
+          'stands'
+          'on'
+          'right'
+        expression
+          'man'
+          'waves'
+    line
+      expression
+        'man'
+        'forward'
+        'onto'
+        'left'
+    line simul
+      expressions semi
+        expression
+          'woman'
+          'raises'
+          'arm'
+        expression
+          'woman'
+          'smiles'
+      duration
+        '6'
+        'beats'
+    line
+      expressions comma
+        expression
+          'woman'
+          'forward'
+        expression
+          'woman'
+          'side'
+      duration
+        '8'
+        'beats'
+    line
+      expression
+        atoms parallel
+          'man'
+          'woman'
+        'dip'
+      duration
+        '10'
+        'beats'
+"""), 
+  # -------------------------
+  ("""
+# 13: who block
+about:
+  dancers: man
+man:
+  forward, side
+  wave; smile;
+""" , """
+  pivot
+    empty line
+    block
+      block head
+        about
+          'about'
+      block body
+        block
+          block head
+            'dancers'
+          block body
+            line
+              expression
+                'man'
+    block
+      block head
+        'man'
+      block body
+        line
+          expressions comma
+            expression
+              'forward'
+            expression
+              'side'
+        line simul
+          expressions semi
+            expression
+              'wave'
+            expression
+              'smile'
+"""), 
+  # -------------------------
+  ("""
 # template
 """ , """
   pivot
@@ -1120,18 +1294,18 @@ will & sally:
 
 # == main ==
 
-def print_help():
-  print "usage: pivot file"
-
 if __name__ == "__main__":
-  if showTestsParse: Tests(codeTests).show()
-  if runTests: Tests(codeTests).run()
+  if showTestsParse: 
+    Tests(codeTests).show()
+  if runTests: 
+    Tests(codeTests).run()
   if not showTestsParse and not runTests:
     if len(sys.argv) > 1: 
       filename = sys.argv[-1]
-      if not filename.endswith('.pivot'): filename += '.pivot'
+      if not filename.endswith('.pivot'): 
+        filename += '.pivot'
       dance = Dance(file=filename)
-      print dance.asFullFormText()
+      print dance.asFullFormText()   # units='beats'|'sec'
     else:
       code = sys.stdin.read()
       dance = Dance(code)

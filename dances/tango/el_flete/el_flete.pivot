@@ -14,24 +14,24 @@ man stands on right foot;           # basic form is "noun verb args"
 woman stands on left foot;          # object form: woman.stands(on,left,foot)
 
 man              & woman:           # parallel structures for two dancers
-  forward        |   back
-  forward        |   back 
-  forward        |   back
-  forward        |   back
-  side, shift    |   side, shift    # two moves in one beat
-  back           |   back
-  side, shift    |   side, shift
-  forward        |   back           # one move in two lines,
-  ...            |   ...            # i.e. in two beats
-  pause          |   pause
-  shift, shift   |   shift, shift
-  side           |   side
-  shift          |   shift
-  side           |   side
-  side           |   side
-  forward, shift |   back, shift
-  back           |   forward
-  ...            |   ...
+  forward        !   back
+  forward        !   back 
+  forward        !   back
+  forward        !   back
+  side, shift    !   side, shift    # two moves in one beat
+  back           !   back
+  side, shift    !   side, shift
+  forward        !   back           # one move in two lines,
+  ...            !   ...            # i.e. in two beats
+  pause          !   pause
+  shift, shift   !   shift, shift
+  side           !   side
+  shift          !   shift
+  side           !   side
+  side           !   side
+  forward, shift !   back, shift
+  back           !   forward
+  ...            !   ...
 
 man & woman pause     (16 beats)    # explicit time duration 
 

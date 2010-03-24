@@ -1,0 +1,166 @@
+
+# function definitions ???
+
+dancer who:
+  define forward $distance: 
+    put stuff here
+  define back $args:
+    put more stuff here
+
+---------------
+
+ Here's a short example of a pivot dance description :
+
+    in 16 beats:
+      sides wave;           # ';' means simultaneous; no elapsed time
+      heads chain across    # a typical "who what how" sequential line
+      heads wave;          
+      sides chain across    # two lines with duration, so 8 beats each
+    in 8 beats per line:
+      heads: 
+        forward, back       # 4 beats for two sequential moves
+        right_n_left        # 8 beats for one move
+
+ ********************
+ START TIMING RAMBLE
+ **********************
+ My thinking has already changed; that example is dated.
+ I'm not sure that I want to support 'in ...:' syntax;
+ I think I like instead
+   (a) a default duration per line, and 
+   (b) multiple steps with commas per line, and
+   (c) ... for one step per multiple lines, and
+   (d) explicit line durations with parens, e.g. (16 beats)
+ That's enough complexity already.
+
+ The 'at 3 sec:' syntax will probably still be needed; I need more examples.
+
+ I also think that mixing simultaneous (pose) and sequential (action) steps
+ on the same line is asking for trouble.  I'd originally imagined things
+ like
+   wave; step
+ but think that the complications of "a; b, c; d, e, f" possibilities are too much.
+ Keep it simple: each line is either sequential (ends with a comma or nothing), 
+ or is simultaneous (ends with a semicolon) and all its steps take zero beats.
+ That's simple to describe and simple to interpret.
+
+ Perhaps the real problem is that I'm not treating the distinction
+ between two steps which each have a duration and yet happen simultaneously, 
+ and a step which has an unknown duration.
+ And how to set timing for an entire block also isn't clear to me.
+   man:
+     this; that;
+     walk, walk
+   woman:         # when should this happen?  after?  at same time as man's block?
+     wave; smile; # do I have to use "at X:" to specify?  what's the default?
+     walk, walk
+
+ Maybe a duration at the end of the line declaring the block!??
+ Maybe a way to declare simultaneous using the () at the end???
+
+   man:      (32 beats)
+     forward, side
+     back, side
+   woman:    (; ditto)       # meaning "same start time ... as what?
+     back, side
+     forward, side
+
+ Do I allow duration and the semi?
+
+   man smile   (16 beats);   # meaning this lasts for 16 beats, 
+   man walk                  # but clock for this isn't advanced?
+
+ Or in the other order??
+
+   man smile;                (16 beats)
+   man:                      (16 beats)
+     foward, back            # do I allow a duration here, too?
+
+ Should 'at' times also be in the parens at the end?  e.g.
+    man walk                  (at 3 sec)
+    woman waves               (at 3.5 sec in 4 beats)   # or even both?
+
+ Hmmm.  I'm getting too complicated again.
+
+ For now I'll keep it simple: semicolon means zero duration, 
+ and each line is all semi or none.
+
+ Best guess for the rest now is to allow timing per block
+ in parens (at 3 sec) at end; perhaps I can eliminate 
+ the at: and in: colon constructs altogether.
+
+ Also, at this point blocks with one actor e.g. "who: ..." 
+ are parsed, but not yet compiled.  (I've done parallel blocks, but not plain yet.)
+ ***************************************
+
+March 23 thinking out loud :
+
+I think that I shouldn't give up the 'at 3 sec:' block syntax.
+Leave the parens for duration.
+
+The question of having two blocks, say men: , women: at
+the same time should be done by indenting both :
+
+ at 3 sec:
+   men:
+     walk, talk
+   women:
+     smile, wave
+
+The semicolon means that the clock doesn't advance for the next line.
+The duration is by default then 0.0 (meaning undefined) but can be specified.
+
+man waves right hand;    (3 beats)
+man forward on right
+
+Let the colon be used *only* to end a line and start a following indent block.
+Then the syntax for the about: block would need to use equal signs, i.e.
+  about: 
+    dance = argentine tango [man, woman]
+    tempo = 8 beats per line
+Is the 'about:' really needed?  Why not just let those be 'global' assignments?
+
+--------------
+ruby-ish blocks for functions ?  do ... end?   { ... }
+Can I use something like their |a,b,c| arg lists?  
+Presumably only if I use another char for parallel ... perhaps ! (visually lines up ok, anyway)
+
+  man smile = do |x,y| ... end
+
+  define man:
+    smile = do |x,y|:
+      ...
+    end
+
+This isn't ruby, of course; "= do" doesn't work there.
+In ruby I think you'd need something like
+  foo = lambda do |x| x+1 end
+  foo.call(3)
+
+io print 
+
+---------------
+Allow typical object syntax:
+  men.walk(which way)
+
+Use brackets for comma arrays.
+  [a,b,c]
+
+Always (well, almost always) assume "object method" invocation.
+
+Perhaps global functions and variables could use the "no object" period syntax?
+ .a = 17
+ .foo(this, that)
+Then object internals could be the typical
+ man.position
+and so on
+
+Assignment statements (a = ...) aren't steps, and don't change the clock.
+Lines ending with semis don't change the clock.  (They are steps, 
+but might not pose any characters.)
+
+------------------
+  # default object 'dance', method 'is', instance variable dance.tempo
+  dance: 
+    is argentine tango [man, woman, couple]
+    tempo = 1 beat per line

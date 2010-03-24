@@ -7,17 +7,16 @@ about:
   dancers: men, woman, partner, neighbor, all
   tempo: 8 beats per line
 
-all becket formation;
+all becket;
 
-men allemand by left 3/2        # A1
+men allemand left 3/2                # A1
 all hey 1/2
 
-partner gypsy                   # A2
-partner swing
+partner gypsy, partner swing  (16)   # A2
 
-all circle left                 # B1
-women chain across              # (to neighbor)
+all circle left                      # B1
+women chain across                   # (to neighbor)
 
-all star by left                # B2
-all progress; neighbor swing
-
+all star by left                     # B2
+all progress; 
+neighbor swing
