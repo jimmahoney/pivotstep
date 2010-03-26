@@ -1,47 +1,47 @@
 #          who |         what |                  how |      clock |      beats
 # ----------------------------------------------------------------------------
-#  _man_woman_ |      embrace |                 open |     0.0000 |    0.00000
-#          man |       stands |        on right foot |     0.0000 |    0.00000
-#          man |      forward |                      |     0.0000 |    1.00000
-#        woman |       stands |         on left foot |     0.0000 |    0.00000
-#        woman |         back |                      |     0.0000 |    1.00000
-#          man |      forward |                      |     1.0000 |    1.00000
-#        woman |         back |                      |     1.0000 |    1.00000
-#          man |      forward |                      |     2.0000 |    1.00000
-#        woman |         back |                      |     2.0000 |    1.00000
-#          man |      forward |                      |     3.0000 |    1.00000
-#        woman |         back |                      |     3.0000 |    1.00000
-#          man |         side |                      |     4.0000 |    0.50000
-#        woman |         side |                      |     4.0000 |    0.50000
-#          man |        shift |                      |     4.5000 |    0.50000
-#        woman |        shift |                      |     4.5000 |    0.50000
-#          man |         back |                      |     5.0000 |    1.00000
-#        woman |         back |                      |     5.0000 |    1.00000
-#          man |         side |                      |     6.0000 |    0.50000
-#        woman |         side |                      |     6.0000 |    0.50000
-#          man |        shift |                      |     6.5000 |    0.50000
-#        woman |        shift |                      |     6.5000 |    0.50000
-#          man |      forward |                      |     7.0000 |    2.00000
-#        woman |         back |                      |     7.0000 |    2.00000
-#          man |        pause |                      |     9.0000 |    1.00000
-#        woman |        pause |                      |     9.0000 |    1.00000
-#          man |        shift |                      |    10.0000 |    0.50000
-#        woman |        shift |                      |    10.0000 |    0.50000
-#          man |        shift |                      |    10.5000 |    0.50000
-#        woman |        shift |                      |    10.5000 |    0.50000
-#          man |         side |                      |    11.0000 |    1.00000
-#        woman |         side |                      |    11.0000 |    1.00000
-#          man |        shift |                      |    12.0000 |    1.00000
-#        woman |        shift |                      |    12.0000 |    1.00000
-#          man |         side |                      |    13.0000 |    1.00000
-#        woman |         side |                      |    13.0000 |    1.00000
-#          man |         side |                      |    14.0000 |    1.00000
-#        woman |         side |                      |    14.0000 |    1.00000
-#          man |      forward |                      |    15.0000 |    0.50000
-#        woman |         back |                      |    15.0000 |    0.50000
-#          man |        shift |                      |    15.5000 |    0.50000
-#        woman |        shift |                      |    15.5000 |    0.50000
-#          man |         back |                      |    16.0000 |    2.00000
-#        woman |      forward |                      |    16.0000 |    2.00000
-#  _man_woman_ |        pause |                      |    18.0000 |   16.00000
+   _man_woman_ |      embrace |                 open |     0.0000 |    0.00000
+           man |       stands |        on right foot |     0.0000 |    0.00000
+           man |      forward |                      |     0.0000 |    1.00000
+         woman |       stands |         on left foot |     0.0000 |    0.00000
+         woman |         back |                      |     0.0000 |    1.00000
+           man |      forward |                      |     1.0000 |    1.00000
+         woman |         back |                      |     1.0000 |    1.00000
+           man |      forward |                      |     2.0000 |    1.00000
+         woman |         back |                      |     2.0000 |    1.00000
+           man |      forward |                      |     3.0000 |    1.00000
+         woman |         back |                      |     3.0000 |    1.00000
+           man |         side |                      |     4.0000 |    0.50000
+         woman |         side |                      |     4.0000 |    0.50000
+           man |        shift |                      |     4.5000 |    0.50000
+         woman |        shift |                      |     4.5000 |    0.50000
+           man |         back |                      |     5.0000 |    1.00000
+         woman |         back |                      |     5.0000 |    1.00000
+           man |         side |                      |     6.0000 |    0.50000
+         woman |         side |                      |     6.0000 |    0.50000
+           man |        shift |                      |     6.5000 |    0.50000
+         woman |        shift |                      |     6.5000 |    0.50000
+           man |      forward |                      |     7.0000 |    2.00000
+         woman |         back |                      |     7.0000 |    2.00000
+           man |        pause |                      |     9.0000 |    1.00000
+         woman |        pause |                      |     9.0000 |    1.00000
+           man |        shift |                      |    10.0000 |    0.50000
+         woman |        shift |                      |    10.0000 |    0.50000
+           man |        shift |                      |    10.5000 |    0.50000
+         woman |        shift |                      |    10.5000 |    0.50000
+           man |         side |                      |    11.0000 |    1.00000
+         woman |         side |                      |    11.0000 |    1.00000
+           man |        shift |                      |    12.0000 |    1.00000
+         woman |        shift |                      |    12.0000 |    1.00000
+           man |         side |                      |    13.0000 |    1.00000
+         woman |         side |                      |    13.0000 |    1.00000
+           man |         side |                      |    14.0000 |    1.00000
+         woman |         side |                      |    14.0000 |    1.00000
+           man |      forward |                      |    15.0000 |    0.50000
+         woman |         back |                      |    15.0000 |    0.50000
+           man |        shift |                      |    15.5000 |    0.50000
+         woman |        shift |                      |    15.5000 |    0.50000
+           man |         back |                      |    16.0000 |    2.00000
+         woman |      forward |                      |    16.0000 |    2.00000
+   _man_woman_ |        pause |                      |    18.0000 |   16.00000
 
