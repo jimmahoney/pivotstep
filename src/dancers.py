@@ -52,10 +52,11 @@ blender_data = {
         'step side R to L',       # legs,      step
         'step shift L to R',      # legs,      step
         'step shift R to L',      # legs,      step
+        'stand R',                # legs,      same_foot
+        'stand L',                # legs,      same_foot
         ],
 
-    # Need to create actions 'stand R', 'stand L' from corresponding poses,
-    # and adjust shortname2longname accordingly.
+    # Need to create actions 'stand R', 'stand L' from corresponding poses
 
     'poses' : [             # the blender pose library is the 'PoseLib' action
         'default pose',
@@ -127,10 +128,11 @@ class Step:
                  'forward' : 'back',
                  'back' : 'forward',
                  'side' : 'side',
-                 'shift' : 'shift'
+                 'shift' : 'shift',
+                 'stand' : 'stand'
                  }
-    poses = {'stands' : 'stand on '}
-    longfoot = {'L' : 'left', 'R' : 'right'}
+    change_foot = ['forward', 'back', 'side', 'shift']
+    same_foot = ['stand', 'stands']
 
     @staticmethod
     def flip(stepname):
@@ -167,12 +169,13 @@ class Step:
             # print " foot = '%s'" % str(foot)
             if mirror:
                 (name, foot) = (Step.flip(name), Step.flip(foot))
-            if name in self.symmetric:
+            if name in self.change_foot:
                 # print " in symmetric "
                 longname = 'step ' + name + ' ' + foot + ' to ' + Step.flip(foot)
-            elif name in self.poses:
-                # print " in poses"
-                longname = self.poses[name] + self.longfoot[foot] + ' foot'
+            elif name in self.same_foot:
+                if name[-1] == 's':
+                    name = name[:-1]
+                longname = name + ' ' + foot
             else:
                 longname = '?'
             # print " longname = '%s'" % longname
